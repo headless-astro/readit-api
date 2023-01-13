@@ -1,6 +1,5 @@
 var express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const config = require("./config");
 const { authentication } = require("./middlewares/authentication");
 require("./helpers/db.helper");
