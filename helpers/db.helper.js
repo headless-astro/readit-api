@@ -5,7 +5,6 @@ mongoose
   .connect(config.mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
   })
   .then(() => {
     console.log("Mongo connect.");
@@ -13,5 +12,3 @@ mongoose
   .catch((error) => {
     console.log("Database connection problem, error:", error);
   });
-
-mongoose.set("useCreateIndex", true);

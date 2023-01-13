@@ -42,9 +42,9 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  const userResult = await userModel.findOne({ email });
+  const userResult = await userModel.findOne({ username: username });
   if (userResult === null) {
     return res.status(422).json({
       success: false,
