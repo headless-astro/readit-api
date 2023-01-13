@@ -93,7 +93,7 @@ exports.currentUser = async (req, res) => {
     uid: userResult.id,
     profile_id: userResult.profile_id,
     email: userResult.email,
-    username: userResult.first_name,
+    username: userResult.username,
   };
 
   console.log(data);
