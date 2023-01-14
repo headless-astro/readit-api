@@ -36,8 +36,8 @@ exports.currentMovie = async (req, res) => {
 };
 
 exports.getAllMovies = async (req, res) => {
-  var result = await movieModel.find();
-  if (result === null) {
+  var movieResult = await movieModel.find();
+  if (movieResult === null) {
     return res.status(422).json({
       success: false,
       message: "No movie data.",
@@ -46,7 +46,7 @@ exports.getAllMovies = async (req, res) => {
 
   var data = [];
 
-  for (i = 0; i < result.length; i++) {
+  for (i = 0; i < movieResult.length; i++) {
     const tempData = {
       uid: movieResult[i].id,
       title: movieResult[i].title,
