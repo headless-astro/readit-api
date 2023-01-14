@@ -13,7 +13,7 @@ module.exports = mongoose.model(
       type: String,
       required: true,
     },
-    movie_id: {
+    movies: {
       type: [String],
       required: false,
     },

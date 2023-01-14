@@ -25,14 +25,14 @@ exports.createList = async (req, res) => {
     list_id,
     profile_id,
     list_name,
-    movie_id,
+    movies,
   });
 
   const data = {
     uid: list.id,
     userid: list.profile_id,
     listname: list.list_name,
-    movies: list.movie_id,
+    movies: list.movies,
   };
 
   return res.json({
@@ -60,7 +60,7 @@ exports.getAllLists = async (req, res) => {
       uid: result[i].id,
       userid: result[i].profile_id,
       listname: result[i].list_name,
-      movies: result[i].movie_id,
+      movies: result[i].movies,
     };
 
     data.push(tempData);
@@ -90,7 +90,7 @@ exports.currentList = async (req, res) => {
     uid: listResult.id,
     userid: listResult.profile_id,
     listname: listResult.list_name,
-    movies: listResult.movie_id,
+    movies: listResult.movies,
   };
 
   console.log(data);
@@ -101,6 +101,7 @@ exports.currentList = async (req, res) => {
     data,
   });
 };
+
 exports.deleteList = async (req, res) => {
   const { listname, profileid } = req.body;
 
@@ -115,7 +116,57 @@ exports.deleteList = async (req, res) => {
     });
   }
 
-  await listResult.deleteOne(listResult.list_id).where("profile_id", profileid);
+  await listModel.deleteOne(listResult.list_id).where("profile_id", profileid);
+
+  return res.json({
+    success: true,
+    message: "",
+  });
+};
+
+exports.addMovie = async (req, res) => {
+  const { listname, profileid, title } = req.decoded;
+
+  var listResult = await listModel
+    .where("list_name", listname)
+    .where("profile_id", profileid);
+
+  if (listResult === null) {
+    return res.status(422).json({
+      success: false,
+      message: "User doesn't have such a list.",
+    });
+  }
+
+  listModel.updateOne(
+    { _id: listResult.list_id },
+    { $push: { movies: title } }
+  );
+
+  return res.json({
+    success: true,
+    message: "",
+  });
+};
+
+exports.removeMovie = async (req, res) => {
+  const { listname, profileid, title } = req.decoded;
+
+  var listResult = await listModel
+    .where("list_name", listname)
+    .where("profile_id", profileid);
+
+  if (listResult === null) {
+    return res.status(422).json({
+      success: false,
+      message: "User doesn't have such a list.",
+    });
+  }
+
+  listModel.updateOne(
+    { _id: listResult.list_id },
+    { $pull: { movies: title } }
+  );
 
   return res.json({
     success: true,
