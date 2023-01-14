@@ -24,7 +24,6 @@ exports.currentMovie = async (req, res) => {
     rating: movieResult.rating,
     genres: movieResult.genres,
     cover: movieResult.cover,
-    description: movieResult.description,
   };
 
   console.log(data);
