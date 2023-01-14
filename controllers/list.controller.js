@@ -45,7 +45,7 @@ exports.createList = async (req, res) => {
 exports.getAllLists = async (req, res) => {
   const { profileid } = req.body;
 
-  var result = await listModel.findAll(profileid);
+  var result = await listModel.find().where("profile_id", profileid);
   if (result === null) {
     return res.status(422).json({
       success: false,

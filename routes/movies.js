@@ -6,4 +6,6 @@ const movieController = require("../controllers/movie.controller");
 
 router.get("/current-movie", authentication, movieController.currentMovie);
 
+router.get("/all-movies", authentication, movieController.getAllMovies);
+
 module.exports = router;

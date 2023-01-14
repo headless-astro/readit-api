@@ -34,3 +34,36 @@ exports.currentMovie = async (req, res) => {
     data,
   });
 };
+
+exports.getAllMovies = async (req, res) => {
+  var result = await movieModel.find();
+  if (result === null) {
+    return res.status(422).json({
+      success: false,
+      message: "No movie data.",
+    });
+  }
+
+  var data = [];
+
+  for (i = 0; i < result.length; i++) {
+    const tempData = {
+      uid: movieResult[i].id,
+      title: movieResult[i].title,
+      director: movieResult[i].director,
+      description: movieResult[i].description,
+      year: movieResult[i].year,
+      rating: movieResult[i].rating,
+      genres: movieResult[i].genres,
+      cover: movieResult[i].cover,
+    };
+
+    data.push(tempData);
+  }
+
+  return res.json({
+    success: true,
+    message: "",
+    data,
+  });
+};
