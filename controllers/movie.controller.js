@@ -5,9 +5,9 @@ const hash = require("../helpers/hash.helper");
 const movieModel = require("../models/movie.model");
 
 exports.currentMovie = async (req, res) => {
-  const { uid } = req.decoded;
+  const { title } = req.body;
 
-  var movieResult = await movieModel.findById(uid);
+  var movieResult = await movieModel.where("title", title);
   if (movieResult === null) {
     return res.status(422).json({
       success: false,

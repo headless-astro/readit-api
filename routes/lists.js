@@ -4,6 +4,8 @@ var router = express.Router();
 const { authentication } = require("../middlewares/authentication");
 const listController = require("../controllers/list.controller");
 
+//add movie to list missing, remove movie from list missing
+
 router.get("/list-current", authentication, listController.currentList);
 
 router.post("/list-all", authentication, listController.getAllLists);

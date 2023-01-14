@@ -74,9 +74,11 @@ exports.getAllLists = async (req, res) => {
 };
 
 exports.currentList = async (req, res) => {
-  const { uid, profileid } = req.decoded;
+  const { listname, profileid } = req.decoded;
 
-  var listResult = await listModel.findById(uid).where("profile_id", profileid);
+  var listResult = await listModel
+    .where("list_name", listname)
+    .where("profile_id", profileid);
   if (listResult === null) {
     return res.status(422).json({
       success: false,
@@ -100,9 +102,11 @@ exports.currentList = async (req, res) => {
   });
 };
 exports.deleteList = async (req, res) => {
-  const { uid, profileid } = req.body;
+  const { listname, profileid } = req.body;
 
-  var listResult = await listModel.findById(uid).where("profile_id", profileid);
+  var listResult = await listModel
+    .where("list_name", listname)
+    .where("profile_id", profileid);
 
   if (listResult === null) {
     return res.status(422).json({
@@ -111,7 +115,7 @@ exports.deleteList = async (req, res) => {
     });
   }
 
-  await userResult.deleteOne(uid).where("profile_id", profileid);
+  await listResult.deleteOne(listResult.list_id).where("profile_id", profileid);
 
   return res.json({
     success: true,
