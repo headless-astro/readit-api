@@ -17,6 +17,7 @@ app.set("secretKey", config.secretKey);
 app.use("/movies", require("./routes/movies"));
 app.use("/lists", require("./routes/lists"));
 app.use("/users", require("./routes/users"));
+app.use("/favorite", require("./routes/favorite"));
 
 const port = config.port;
 

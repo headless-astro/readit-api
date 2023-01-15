@@ -104,3 +104,19 @@ exports.currentUser = async (req, res) => {
     data,
   });
 };
+
+exports.getUserId = async (req, res) => {
+  try {
+    userId = jwt.verify(
+      req.headers["authorization"].split(" ")[1],
+      req.app.get("secretKey")
+    ).uid;
+  } catch (e) {
+    res.status(422).json({
+      success: false,
+      message: "Invalid user.",
+    });
+  }
+
+  return userId;
+};

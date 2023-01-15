@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const config = require("../config");
-const hash = require("../helpers/hash.helper");
 const listModel = require("../models/list.model");
+const userController = require("./user.controller");
+const movieModel = require("../models/movie.model");
 
 exports.createList = async (req, res) => {
   const { profileid, listname } = req.body;
@@ -19,17 +20,14 @@ exports.createList = async (req, res) => {
     });
   }
 
-  const list_id = await hash.encrypt("user-" + listname);
-
   const list = await listModel.create({
-    list_id,
     profile_id,
     list_name,
     movies,
   });
 
   const data = {
-    uid: list.id,
+    uid: list._id,
     userid: list.profile_id,
     listname: list.list_name,
     movies: list.movies,
@@ -43,9 +41,8 @@ exports.createList = async (req, res) => {
 };
 
 exports.getAllLists = async (req, res) => {
-  const { profileid } = req.body;
-
-  var result = await listModel.find().where("profile_id", profileid);
+  let user = await userController.getUserId(req, res);
+  var result = await listModel.find({ user_id: user });
   if (result === null) {
     return res.status(422).json({
       success: false,
@@ -57,10 +54,10 @@ exports.getAllLists = async (req, res) => {
 
   for (i = 0; i < result.length; i++) {
     const tempData = {
-      uid: result[i].id,
-      userid: result[i].profile_id,
-      listname: result[i].list_name,
-      movies: result[i].movies,
+      listId: result[i]._id,
+      userId: user,
+      listName: result[i].list_name,
+      movies: result[i].movie_id,
     };
 
     data.push(tempData);
@@ -73,7 +70,7 @@ exports.getAllLists = async (req, res) => {
   });
 };
 
-exports.currentList = async (req, res) => {
+/*exports.currentList = async (req, res) => {
   const { listname, profileid } = req.decoded;
 
   var listResult = await listModel
@@ -100,14 +97,50 @@ exports.currentList = async (req, res) => {
     message: "",
     data,
   });
+};*/
+
+exports.currentList = async (req, res) => {
+  const uid = req.query.listId;
+  let user = await userController.getUserId(req, res);
+  var listResult = await listModel.findById(uid).where("user_id", user);
+  if (listResult === null) {
+    return res.status(422).json({
+      success: false,
+      message: "User doesn't have such a list.",
+    });
+  }
+
+  /*mids = listResult.movie_id;
+  listOfMovie = [];
+  for (let i = 0; i < mids.length; i++) {
+    let movie = await movieModel.find({ Id: mids[i] });
+    listOfMovie.push({
+      movie: movie[0],
+    });
+  }*/
+
+  const data = {
+    listId: uid,
+    userId: listResult.user_id,
+    listName: listResult.list_name,
+    movies: listResult.movies,
+  };
+
+  console.log(data);
+
+  return res.json({
+    success: true,
+    message: "",
+    data,
+  });
 };
 
 exports.deleteList = async (req, res) => {
-  const { listname, profileid } = req.body;
+  const { listname, userid } = req.body;
 
   var listResult = await listModel
     .where("list_name", listname)
-    .where("profile_id", profileid);
+    .where("user_id", userid);
 
   if (listResult === null) {
     return res.status(422).json({
@@ -124,12 +157,23 @@ exports.deleteList = async (req, res) => {
   });
 };
 
+/*exports.deleteList = async (req, res) => {
+  const uid = req.query.listId;
+  let user = await userController.getUserId(req, res);
+  var result = await listModel.findByIdAndDelete(uid).where("user_id", user);
+  return res.json({
+    success: true,
+    message: "",
+    data: result,
+  });
+};
+*/
 exports.addMovie = async (req, res) => {
-  const { listname, profileid, title } = req.decoded;
+  const { listname, userid, title } = req.decoded;
 
   var listResult = await listModel
     .where("list_name", listname)
-    .where("profile_id", profileid);
+    .where("user_id", userid);
 
   if (listResult === null) {
     return res.status(422).json({
@@ -150,11 +194,11 @@ exports.addMovie = async (req, res) => {
 };
 
 exports.removeMovie = async (req, res) => {
-  const { listname, profileid, title } = req.decoded;
+  const { listname, userid, title } = req.decoded;
 
   var listResult = await listModel
     .where("list_name", listname)
-    .where("profile_id", profileid);
+    .where("user_id", userid);
 
   if (listResult === null) {
     return res.status(422).json({

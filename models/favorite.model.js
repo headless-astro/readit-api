@@ -2,21 +2,16 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 module.exports = mongoose.model(
-  "lists",
+  "favorite",
   new Schema({
-    list_id: String,
-    user_id: {
+    UserId: {
       type: String,
-      required: true,
+      required: false,
     },
-    list_name: {
+    MovieId: {
       type: String,
-      required: true,
-    },
-    movie_id: {
-      type: [String],
       required: false,
     },
   }),
-  "lists"
+  "favorite"
 );
