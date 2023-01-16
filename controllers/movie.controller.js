@@ -23,22 +23,11 @@ exports.currentMovie = async (req, res) => {
     });
   }
 
-  const data = {
-    uid: movieResult.id,
-    title: movieResult.title,
-    director: movieResult.director,
-    description: movieResult.description,
-    year: movieResult.year,
-    rating: movieResult.rating,
-    genres: movieResult.genres,
-    cover: movieResult.cover,
-  };
-
-  console.log(data);
+  console.log(movieResult);
 
   return res.json({
     success: true,
     message: "",
-    data,
+    data: movieResult,
   });
 };

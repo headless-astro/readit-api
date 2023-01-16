@@ -139,7 +139,7 @@ exports.addMovie = async (req, res) => {
     });
   }
 
-  listModel.updateOne(
+  await listModel.updateOne(
     { _id: listResult.list_id },
     { $push: { movies: title } }
   );
@@ -164,7 +164,7 @@ exports.removeMovie = async (req, res) => {
     });
   }
 
-  listModel.updateOne(
+  await listModel.updateOne(
     { _id: listResult.list_id },
     { $pull: { movies: title } }
   );

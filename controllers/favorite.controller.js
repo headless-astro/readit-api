@@ -6,7 +6,10 @@ const user = require("../controllers/user.controller");
 exports.addFavorite = async (req, res) => {
   const { title, userId } = req.body;
 
-  var favoriteExists = favoriteModel.find({ movies: title, userId: userId });
+  var favoriteExists = await favoriteModel.findOne({
+    movies: title,
+    userId: userId,
+  });
   if (favoriteExists) {
     return res.status(422).json({
       success: false,
@@ -14,19 +17,10 @@ exports.addFavorite = async (req, res) => {
     });
   }
 
-  var favoritesResult = favoriteModel.find({ userId: userId });
+  var favoritesResult = await favoriteModel.findOne({ userId: userId });
 
-  if (favoritesResult === null) {
-    const favs = await favoriteModel.create({
-      userId,
-      movies,
-    });
-
-    favoritesResult = favoriteModel.find({ userId: userId });
-  }
-
-  favoriteModel.updateOne(
-    { _id: favoritesResult._id },
+  await favoriteModel.updateOne(
+    { _id: favoritesResult.id },
     { $push: { movies: title } }
   );
 
@@ -39,17 +33,21 @@ exports.addFavorite = async (req, res) => {
 exports.deleteFavorite = async (req, res) => {
   const { title, userId } = req.body;
 
-  var favoriteResult = favoriteModel.find({ movies: title, userId: userId });
+  var favoritesResult = await favoriteModel.findOne({
+    movies: title,
+    userId: userId,
+  });
 
-  if (!favoriteResult) {
+  if (!favoritesResult) {
     return res.status(422).json({
       success: false,
       message: "Movie not in favorites",
     });
   }
+  console.log(favoritesResult.id);
 
-  favoriteModel.updateOne(
-    { _id: favoritesResult._id },
+  await favoriteModel.updateOne(
+    { _id: favoritesResult.id },
     { $pull: { movies: title } }
   );
 
@@ -62,10 +60,8 @@ exports.deleteFavorite = async (req, res) => {
 exports.getUserFavorites = async (req, res) => {
   const { userid } = req.body;
   const result = await favoriteModel.findOne({ userId: userid });
-  console.log(result);
-  console.log(result.movies);
 
-  if (result.length === null) {
+  if (result === null) {
     return res.json({
       success: false,
       message: "No favorites",

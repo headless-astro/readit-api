@@ -18,6 +18,7 @@ app.use("/movies", require("./routes/movies"));
 app.use("/lists", require("./routes/lists"));
 app.use("/users", require("./routes/users"));
 app.use("/favorite", require("./routes/favorite"));
+app.use("/watchlist", require("./routes/watchlist"));
 
 const port = config.port;
 

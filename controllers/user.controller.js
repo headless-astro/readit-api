@@ -3,6 +3,8 @@ const axios = require("axios");
 const config = require("../config");
 const hash = require("../helpers/hash.helper");
 const userModel = require("../models/user.model");
+const favoriteModel = require("../models/favorite.model");
+const watchlistModel = require("../models/watchlist.model");
 
 exports.registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -26,6 +28,16 @@ exports.registerUser = async (req, res) => {
     username,
     email,
     password: hashResult,
+  });
+
+  const watchlist = await watchlistModel.create({
+    userId: user.id,
+    movies: [],
+  });
+
+  const favorites = await favoriteModel.create({
+    userId: user.id,
+    movies: [],
   });
 
   const data = {

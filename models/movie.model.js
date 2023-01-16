@@ -13,7 +13,7 @@ module.exports = mongoose.model(
       type: String,
       required: true,
     },
-    description: {
+    plot: {
       type: String,
       required: true,
     },
@@ -21,15 +21,19 @@ module.exports = mongoose.model(
       type: String,
       required: false,
     },
-    rating: {
-      type: String,
-      required: false,
-    },
     genres: {
       type: [String],
       required: false,
     },
-    cover: {
+    posterUrl: {
+      type: String,
+      required: false,
+    },
+    runtime: {
+      type: String,
+      required: true,
+    },
+    actors: {
       type: String,
       required: false,
     },

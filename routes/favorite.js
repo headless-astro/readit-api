@@ -8,7 +8,7 @@ router.post(
 
   favoriteController.getUserFavorites
 );
-router.delete(
+router.post(
   "/delete-favorite",
 
   favoriteController.deleteFavorite
