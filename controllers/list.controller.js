@@ -42,7 +42,10 @@ exports.createList = async (req, res) => {
 
 exports.getAllLists = async (req, res) => {
   const { userid } = req.body;
-  const result = await listModel.find({ user_id: userid });
+  const result = await listModel.where("user_id", userid);
+  console.log(userid);
+  console.log(result);
+  console.log(result.length);
   if (result === null) {
     return res.json({
       success: false,
@@ -55,14 +58,16 @@ exports.getAllLists = async (req, res) => {
   for (i = 0; i < result.length; i++) {
     const tempData = {
       list_id: result[i]._id,
-      user_id: user,
+      user_id: userid,
       list_name: result[i].list_name,
       movies: result[i].movies,
     };
 
     data.push(tempData);
+    console.log(tempData);
   }
 
+  console.log(data);
   return res.json({
     success: true,
     message: "",
