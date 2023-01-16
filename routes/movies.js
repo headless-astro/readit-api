@@ -1,11 +1,10 @@
 var express = require("express");
 var router = express.Router();
 
-const { authentication } = require("../middlewares/authentication");
 const movieController = require("../controllers/movie.controller");
 
-router.get("/current-movie", authentication, movieController.currentMovie);
+router.post("/current-movie", movieController.currentMovie);
 
-router.get("/all-movies", authentication, movieController.getAllMovies);
+router.post("/all-movies", movieController.getAllMovies);
 
 module.exports = router;

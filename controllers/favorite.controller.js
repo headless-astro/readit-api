@@ -4,38 +4,79 @@ const movieModel = require("../models/movie.model");
 const user = require("../controllers/user.controller");
 
 exports.addFavorite = async (req, res) => {
-  await favoriteModel.create({
-    UserId: await user.getUserId(req, res),
-    MovieId: req.query.movie_id,
+  const { title, userId } = req.body;
+
+  var favoriteExists = favoriteModel.find({ movies: title, userId: userId });
+  if (favoriteExists) {
+    return res.status(422).json({
+      success: false,
+      message: "Movie already in favorites",
+    });
+  }
+
+  var favoritesResult = favoriteModel.find({ userId: userId });
+
+  if (favoritesResult === null) {
+    const favs = await favoriteModel.create({
+      userId,
+      movies,
+    });
+
+    favoritesResult = favoriteModel.find({ userId: userId });
+  }
+
+  favoriteModel.updateOne(
+    { _id: favoritesResult._id },
+    { $push: { movies: title } }
+  );
+
+  return res.json({
+    success: true,
+    message: "",
   });
 };
 
 exports.deleteFavorite = async (req, res) => {
-  await favoriteModel.deleteOne({
-    UserId: await user.getUserId(req, res),
-    _id: req.query.favorite_id,
-  });
+  const { title, userId } = req.body;
+
+  var favoriteResult = favoriteModel.find({ movies: title, userId: userId });
+
+  if (!favoriteResult) {
+    return res.status(422).json({
+      success: false,
+      message: "Movie not in favorites",
+    });
+  }
+
+  favoriteModel.updateOne(
+    { _id: favoritesResult._id },
+    { $pull: { movies: title } }
+  );
+
   return res.json({
     success: true,
-    message: "Favorite Deleted",
+    message: "",
   });
 };
 
-exports.getUserFavorite = async (req, res) => {
-  let data = await favoriteModel.find({
-    UserId: await user.getUserId(req, res),
-  });
-  listOfFavorite = [];
-  for (let i = 0; i < data.length; i++) {
-    let movie = await movieModel.find({ Id: data[i].MovieId });
-    listOfFavorite.push({
-      favoriteId: data[i]._id,
-      movie: movie[0],
+exports.getUserFavorites = async (req, res) => {
+  const { userid } = req.body;
+  const result = await favoriteModel.findOne({ userId: userid });
+  console.log(result);
+  console.log(result.movies);
+
+  if (result.length === null) {
+    return res.json({
+      success: false,
+      message: "No favorites",
     });
   }
+
+  const data = result.movies;
+
   return res.json({
     success: true,
     message: "Favorite Data",
-    data: listOfFavorite,
+    data,
   });
 };

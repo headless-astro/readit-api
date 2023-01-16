@@ -9,7 +9,7 @@ exports.authentication = (req, res, next) => {
     token = temptoken;
   }
 
-  if (!token) {
+  if (!temptoken) {
     res.status(401).json({
       success: false,
       message: "Not authenticated.",

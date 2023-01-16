@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 module.exports = mongoose.model(
   "favorite",
   new Schema({
-    UserId: {
+    userId: {
       type: String,
-      required: false,
+      required: true,
     },
-    MovieId: {
-      type: String,
+    movies: {
+      type: [String],
       required: false,
     },
   }),

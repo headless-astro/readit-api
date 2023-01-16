@@ -1,12 +1,11 @@
 const movieModel = require("../models/movie.model");
 
 exports.getAllMovies = async (req, res) => {
-  var movieResult = await movieModel.find({});
-  console.log(movieResult);
+  const movieResult = await movieModel.find({});
   if (movieResult === null) {
     return res.status(422).json({
       success: false,
-      message: "Movie doesn't exist.",
+      message: "No movie data.",
     });
   }
 
@@ -16,7 +15,7 @@ exports.getAllMovies = async (req, res) => {
 exports.currentMovie = async (req, res) => {
   const { title } = req.body;
 
-  var movieResult = await movieModel.where("title", title);
+  const movieResult = await movieModel.where("title", title);
   if (movieResult === null) {
     return res.status(422).json({
       success: false,
