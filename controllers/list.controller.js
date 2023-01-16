@@ -43,9 +43,7 @@ exports.createList = async (req, res) => {
 exports.getAllLists = async (req, res) => {
   const { userid } = req.body;
   const result = await listModel.where("user_id", userid);
-  console.log(userid);
-  console.log(result);
-  console.log(result.length);
+
   if (result === null) {
     return res.json({
       success: false,
@@ -64,7 +62,6 @@ exports.getAllLists = async (req, res) => {
     };
 
     data.push(tempData);
-    console.log(tempData);
   }
 
   console.log(data);
@@ -127,7 +124,7 @@ exports.deleteList = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
   const { listname, userid, title } = req.body;
-
+  const posterUrl = null;
   const listResult = await listModel
     .where("list_name", listname)
     .where("user_id", userid);
@@ -138,10 +135,13 @@ exports.addMovie = async (req, res) => {
       message: "User doesn't have such a list.",
     });
   }
-
+  const urlResult = await movieModel.findOne({ title: title });
+  if (urlResult !== null) {
+    posterUrl = urlResult.posterUrl;
+  }
   await listModel.updateOne(
     { _id: listResult.list_id },
-    { $push: { movies: title } }
+    { $push: { movies: { title: title, posterUrl: posterUrl } } }
   );
 
   return res.json({

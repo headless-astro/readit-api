@@ -14,7 +14,7 @@ module.exports = mongoose.model(
       required: true,
     },
     movies: {
-      type: [String],
+      type: [{ title: { type: String }, posterUrl: { type: String } }],
       required: false,
     },
   }),
