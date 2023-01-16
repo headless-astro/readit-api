@@ -15,7 +15,7 @@ exports.getAllMovies = async (req, res) => {
 exports.currentMovie = async (req, res) => {
   const { title } = req.body;
 
-  const movieResult = await movieModel.where("title", title);
+  const movieResult = await movieModel.findOne({ title: title });
   if (movieResult === null) {
     return res.status(422).json({
       success: false,
