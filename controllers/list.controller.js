@@ -76,11 +76,9 @@ exports.getAllLists = async (req, res) => {
 };
 
 exports.currentList = async (req, res) => {
-  const { listname, userid } = req.body;
-
-  const listResult = await listModel
-    .where("list_name", listname)
-    .where("user_id", userid);
+  const { id } = req.body;
+  console.log(id);
+  const listResult = await listModel.findOne({ _id: id });
 
   if (listResult === null) {
     return res.status(422).json({
