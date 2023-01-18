@@ -5,23 +5,27 @@ const user = require("../controllers/user.controller");
 
 exports.addFavorite = async (req, res) => {
   const { title, userId } = req.body;
+  var posterUrl = null;
 
-  var favoriteExists = await favoriteModel.findOne({
-    movies: title,
-    userId: userId,
+  const favExists = await favoriteModel.findOne({
+    movies: { $elemMatch: { title: title } },
   });
-  if (favoriteExists) {
-    return res.status(422).json({
+  if (favExists) {
+    return res.json({
       success: false,
       message: "Movie already in favorites",
     });
   }
 
+  const urlResult = await movieModel.findOne({ title: title });
+  if (urlResult !== null) {
+    posterUrl = urlResult.posterUrl;
+  }
   var favoritesResult = await favoriteModel.findOne({ userId: userId });
 
   await favoriteModel.updateOne(
     { _id: favoritesResult.id },
-    { $push: { movies: title } }
+    { $push: { movies: { title: title, posterUrl: posterUrl } } }
   );
 
   return res.json({
@@ -32,23 +36,22 @@ exports.addFavorite = async (req, res) => {
 
 exports.deleteFavorite = async (req, res) => {
   const { title, userId } = req.body;
-
-  var favoritesResult = await favoriteModel.findOne({
-    movies: title,
-    userId: userId,
+  const favExists = await favoriteModel.findOne({
+    movies: { $elemMatch: { title: title } },
   });
-
-  if (!favoritesResult) {
-    return res.status(422).json({
+  if (!favExists) {
+    return res.json({
       success: false,
       message: "Movie not in favorites",
     });
   }
-  console.log(favoritesResult.id);
+  var favoritesResult = await favoriteModel.findOne({
+    userId: userId,
+  });
 
   await favoriteModel.updateOne(
     { _id: favoritesResult.id },
-    { $pull: { movies: title } }
+    { $pull: { movies: { title: title } } }
   );
 
   return res.json({

@@ -23,8 +23,6 @@ exports.currentMovie = async (req, res) => {
     });
   }
 
-  console.log(movieResult);
-
   return res.json({
     success: true,
     message: "",

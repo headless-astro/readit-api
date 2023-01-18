@@ -6,32 +6,26 @@ const watchlistModel = require("../models/watchlist.model");
 
 exports.addToWatchlist = async (req, res) => {
   const { title, userId } = req.body;
-
-  var movieExists = await watchlistModel.findOne({
-    movies: title,
-    userId: userId,
+  var posterUrl = null;
+  const movExists = await watchlistModel.findOne({
+    movies: { $elemMatch: { title: title } },
   });
-  if (movieExists) {
-    return res.status(422).json({
+  if (movExists) {
+    return res.json({
       success: false,
-      message: "Movie already in watchlist",
+      message: "Movie in watchlist",
     });
+  }
+  const urlResult = await movieModel.findOne({ title: title });
+  if (urlResult !== null) {
+    posterUrl = urlResult.posterUrl;
   }
 
   var result = await watchlistModel.findOne({ userId: userId });
 
-  if (result === null) {
-    const watchlist = await watchlistModel.create({
-      userId,
-      movies,
-    });
-
-    result = await watchlistModel.findOne({ userId: userId });
-  }
-
   await watchlistModel.updateOne(
     { _id: result.id },
-    { $push: { movies: title } }
+    { $push: { movies: { title: title, posterUrl: posterUrl } } }
   );
 
   return res.json({
@@ -42,23 +36,22 @@ exports.addToWatchlist = async (req, res) => {
 
 exports.deleteFromWatchlist = async (req, res) => {
   const { title, userId } = req.body;
-
-  var result = await watchlistModel.findOne({
-    movies: title,
-    userId: userId,
+  const movExists = await watchlistModel.findOne({
+    movies: { $elemMatch: { title: title } },
   });
-
-  if (!result) {
-    return res.status(422).json({
+  if (!movExists) {
+    return res.json({
       success: false,
       message: "Movie not in watchlist",
     });
   }
-  console.log(result.id);
+  var result = await watchlistModel.findOne({
+    userId: userId,
+  });
 
   await watchlistModel.updateOne(
     { _id: result.id },
-    { $pull: { movies: title } }
+    { $pull: { movies: { title: title } } }
   );
 
   return res.json({

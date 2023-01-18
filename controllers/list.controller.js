@@ -64,7 +64,6 @@ exports.getAllLists = async (req, res) => {
     data.push(tempData);
   }
 
-  console.log(data);
   return res.json({
     success: true,
     message: "",
@@ -90,8 +89,6 @@ exports.currentList = async (req, res) => {
     listname: listResult.list_name,
     movies: listResult.movies,
   };
-
-  console.log(data);
 
   return res.json({
     success: true,
@@ -124,7 +121,7 @@ exports.deleteList = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
   const { listname, userid, title } = req.body;
-  const posterUrl = null;
+  var posterUrl = null;
   const listResult = await listModel
     .where("list_name", listname)
     .where("user_id", userid);
