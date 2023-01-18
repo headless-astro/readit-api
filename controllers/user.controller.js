@@ -108,8 +108,6 @@ exports.currentUser = async (req, res) => {
     username: userResult.username,
   };
 
-  console.log(data);
-
   return res.json({
     success: true,
     message: "",

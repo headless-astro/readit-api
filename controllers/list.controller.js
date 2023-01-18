@@ -21,13 +21,13 @@ exports.createList = async (req, res) => {
   }
 
   const list = await listModel.create({
-    user_id,
-    list_name,
-    movies,
+    user_id: userid,
+    list_name: listname,
+    movies: [],
   });
 
   const data = {
-    uid: list._id,
+    uid: list.id,
     userid: list.user_id,
     listname: list.list_name,
     movies: list.movies,
@@ -111,7 +111,10 @@ exports.deleteList = async (req, res) => {
     });
   }
 
-  await listModel.deleteOne(listResult.list_id).where("user_id", userid);
+  await listModel.deleteOne(
+    { _id: listResult[0]._id },
+    { user_id: listResult[0].user_id }
+  );
 
   return res.json({
     success: true,
@@ -136,8 +139,9 @@ exports.addMovie = async (req, res) => {
   if (urlResult !== null) {
     posterUrl = urlResult.posterUrl;
   }
+
   await listModel.updateOne(
-    { _id: listResult.list_id },
+    { _id: listResult[0]._id },
     { $push: { movies: { title: title, posterUrl: posterUrl } } }
   );
 
@@ -162,7 +166,7 @@ exports.removeMovie = async (req, res) => {
   }
 
   await listModel.updateOne(
-    { _id: listResult.list_id },
+    { _id: listResult[0]._id },
     { $pull: { movies: title } }
   );
 
