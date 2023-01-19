@@ -135,6 +135,19 @@ exports.addMovie = async (req, res) => {
       message: "User doesn't have such a list.",
     });
   }
+  const exists = await listModel.findOne({
+    list_name: listname,
+    user_id: userid,
+    movies: { $elemMatch: { title: title } },
+  });
+
+  if (exists !== null) {
+    return res.status(422).json({
+      success: false,
+      message: "Movie already in list",
+    });
+  }
+
   const urlResult = await movieModel.findOne({ title: title });
   if (urlResult !== null) {
     posterUrl = urlResult.posterUrl;
@@ -162,6 +175,19 @@ exports.removeMovie = async (req, res) => {
     return res.status(422).json({
       success: false,
       message: "User doesn't have such a list.",
+    });
+  }
+
+  const exists = await listModel.findOne({
+    list_name: listname,
+    user_id: userid,
+    movies: { $elemMatch: { title: title } },
+  });
+
+  if (exists === null) {
+    return res.status(422).json({
+      success: false,
+      message: "Movie is not in list",
     });
   }
 
