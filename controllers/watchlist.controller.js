@@ -8,6 +8,7 @@ exports.addToWatchlist = async (req, res) => {
   const { title, userId } = req.body;
   var posterUrl = null;
   const movExists = await watchlistModel.findOne({
+    userId: userId,
     movies: { $elemMatch: { title: title } },
   });
   if (movExists) {
@@ -37,6 +38,7 @@ exports.addToWatchlist = async (req, res) => {
 exports.deleteFromWatchlist = async (req, res) => {
   const { title, userId } = req.body;
   const movExists = await watchlistModel.findOne({
+    userId: userId,
     movies: { $elemMatch: { title: title } },
   });
   if (!movExists) {
@@ -77,5 +79,24 @@ exports.getUserWatchlist = async (req, res) => {
     success: true,
     message: "Watchlist Data",
     data,
+  });
+};
+
+exports.inWatchlist = async (req, res) => {
+  const { title, userid } = req.body;
+  const result = await watchlistModel.findOne({
+    userId: userid,
+    movies: { $elemMatch: { title: title } },
+  });
+  var inWatchlist = false;
+
+  if (result !== null) {
+    inWatchlist = true;
+  }
+
+  return res.json({
+    success: true,
+    message: "is Favorite",
+    data: inWatchlist,
   });
 };

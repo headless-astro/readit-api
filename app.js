@@ -19,6 +19,7 @@ app.use("/lists", require("./routes/lists"));
 app.use("/users", require("./routes/users"));
 app.use("/favorite", require("./routes/favorite"));
 app.use("/watchlist", require("./routes/watchlist"));
+app.use("/ratings", require("./routes/ratings"));
 
 const port = config.port;
 

@@ -73,7 +73,6 @@ exports.getAllLists = async (req, res) => {
 
 exports.currentList = async (req, res) => {
   const { id } = req.body;
-  console.log(id);
   const listResult = await listModel.findOne({ _id: id });
 
   if (listResult === null) {

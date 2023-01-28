@@ -15,4 +15,6 @@ router.post(
 );
 router.post("/add-favorite", favoriteController.addFavorite);
 
+router.post("/isFavorite", favoriteController.isFavorite);
+
 module.exports = router;

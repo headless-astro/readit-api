@@ -8,6 +8,7 @@ exports.addFavorite = async (req, res) => {
   var posterUrl = null;
 
   const favExists = await favoriteModel.findOne({
+    userId: userId,
     movies: { $elemMatch: { title: title } },
   });
   if (favExists) {
@@ -37,6 +38,7 @@ exports.addFavorite = async (req, res) => {
 exports.deleteFavorite = async (req, res) => {
   const { title, userId } = req.body;
   const favExists = await favoriteModel.findOne({
+    userId: userId,
     movies: { $elemMatch: { title: title } },
   });
   if (!favExists) {
@@ -77,5 +79,24 @@ exports.getUserFavorites = async (req, res) => {
     success: true,
     message: "Favorite Data",
     data,
+  });
+};
+
+exports.isFavorite = async (req, res) => {
+  const { title, userid } = req.body;
+  const result = await favoriteModel.findOne({
+    userId: userid,
+    movies: { $elemMatch: { title: title } },
+  });
+  var isFavorite = false;
+
+  if (result !== null) {
+    isFavorite = true;
+  }
+
+  return res.json({
+    success: true,
+    message: "is Favorite",
+    data: isFavorite,
   });
 };
