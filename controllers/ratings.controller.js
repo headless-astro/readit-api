@@ -29,6 +29,7 @@ exports.getRating = async (req, res) => {
 
 exports.getUserRating = async (req, res) => {
   const { title, userid } = req.body;
+  var rating = "";
 
   const ratingResult = await ratingsModel.findOne({
     title: title,
@@ -42,10 +43,15 @@ exports.getUserRating = async (req, res) => {
       data: "",
     });
   }
+  ratingResult.ratings.forEach((element) => {
+    if (element.user_id === userid) {
+      rating = element.rating;
+    }
+  });
   return res.json({
     success: true,
     message: "",
-    data: ratingResult.ratings[0].rating,
+    data: rating,
   });
 };
 
