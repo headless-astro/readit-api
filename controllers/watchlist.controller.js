@@ -81,22 +81,3 @@ exports.getUserWatchlist = async (req, res) => {
     data,
   });
 };
-
-exports.inWatchlist = async (req, res) => {
-  const { title, userid } = req.body;
-  const result = await watchlistModel.findOne({
-    userId: userid,
-    movies: { $elemMatch: { title: title } },
-  });
-  var inWatchlist = false;
-
-  if (result !== null) {
-    inWatchlist = true;
-  }
-
-  return res.json({
-    success: true,
-    message: "is Favorite",
-    data: inWatchlist,
-  });
-};

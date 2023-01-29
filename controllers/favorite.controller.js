@@ -81,22 +81,3 @@ exports.getUserFavorites = async (req, res) => {
     data,
   });
 };
-
-exports.isFavorite = async (req, res) => {
-  const { title, userid } = req.body;
-  const result = await favoriteModel.findOne({
-    userId: userid,
-    movies: { $elemMatch: { title: title } },
-  });
-  var isFavorite = false;
-
-  if (result !== null) {
-    isFavorite = true;
-  }
-
-  return res.json({
-    success: true,
-    message: "is Favorite",
-    data: isFavorite,
-  });
-};
